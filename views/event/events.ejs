@@ -1,0 +1,98 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<% include ../_layouts/head %>
+
+<body>
+  
+    <% include ../_layouts/header %>
+    <div id="wrapper">
+      <% include ../_layouts/sidebar %>
+      <div id="page-wrapper" class="gray-bg">
+        <% include ../_layouts/search %>
+
+        <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="col-sm-4"><h2>This is main title</h2></div>
+          <div class="col-sm-8">
+            <div class="title-action">
+              <a href="" class="btn btn-primary">This is action area</a>
+            </div>
+          </div>
+          <div class="row">
+              <div class="column" id="column"></div>
+            </div>
+            <div class="ibox-content inspinia-timeline">
+
+            
+
+          </div>
+
+        </div>
+
+        <% include ../_layouts/footer %>
+      </div>
+    </div>
+  <% include ../_layouts/foot %>
+  <script>
+
+
+
+function eventHtml2(events){
+     if(events){
+      return events.map(e => {
+         let day = moment(e.startSession).format('dddd');          // in 12 hours
+         let time = moment(e.startSession).endOf('day').fromNow(); 
+         e.startSession = moment(e.startSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+         e.endSession = moment(e.endSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+
+         return `  <div class="timeline-item">
+                  <div class="row">
+                      <div class="col-4 date">
+                          <i class="fa fa-briefcase"></i>
+                           ${day}
+                          <br>
+                          <small class="text-navy">${time}</small>
+                      </div>
+                      <div class="col content no-top-border">
+                          <p class="m-b-xs"><a href="/event/${e._id}"><strong>${e.title}</a></strong></p>
+                          <p>StartAt: <span data-diameter="40" class="updating-chart">${e.startSession}</span></p>
+
+                          <p>${e.description}</p>
+                    
+                          <p>EndAt: <span data-diameter="40" class="updating-chart">${e.endSession}</span></p>
+                          <p>Register with: <a href="/event/facebook?eventId=${e._id}" class="fa fa-facebook"></a>
+                     <a href="/event/google?eventId=${e._id}" class="fa fa-google"></a>
+                      </p>
+                      </div>
+                  </div>
+              </div>
+                 `;
+       }).join('<hr>');
+     } else{
+       return `No events found go <a href="/">home</a>`;
+     }
+  }
+
+
+              $.ajax({
+                  url:`http://localhost:3011/api/v1/event`,
+                  headers:{access_token: $.cookie('access_token')},
+                  method:'get',
+              })
+              .done(d => {
+                if(!d) alert('No events registered');
+                if(d){
+                  $("#column").html(eventHtml2(d));
+                };
+                
+              })
+              .fail(e=>{
+                  console.log(e.responseJSON);
+              });
+
+
+  </script>
+</body>
+</html>

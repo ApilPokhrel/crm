@@ -1,0 +1,152 @@
+
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/img/icons/blood.png" />
+
+    <title>
+      <%= title %>
+    </title>
+
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/css/plugins/iCheck/custom.css" rel="stylesheet" />
+    <link href="/css/animate.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+  </head>
+
+  <body class="gray-bg">
+    <div class="middle-box text-center loginscreen   animated fadeInDown" style="padding:20px;">
+      <div>
+        <div style="margin-bottom: 40px;">
+          <img src="/img/icons/blood_donation.png" width="50%" height="50%" />
+        </div>
+        <h3>Register to hamro LifeBank</h3>
+        <form class="m-t" method="post" id="form1">
+          <div id="error"></div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Full Name"
+              name="name"
+              required="true",
+              value="<%= data.name %>"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Phone"
+              name="phone"
+              required="true",
+              value=""
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="email"
+              class="form-control"
+              placeholder="Email"
+              name="email"
+              required="true",
+              value="<%= data.email %>"
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Password"
+              name="password"
+              required="true"
+            />
+          </div>
+          <div class="form-group">
+            <div class="input-group date">
+              <input
+                type="text"
+                id="date"
+                name="dob"
+                value=""
+                class="form-control form_datetime"
+                style="background-color: #ffffff"
+                data-validation="required"
+                placeholder="Date of birth"
+              />
+              <span class="input-group-addon"><i class="fa fa-calendar icon-calendar"></i></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox i-checks">
+              <label> <input type="checkbox" /><i></i> Agree the terms and policy </label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary block full-width m-b">
+            Register
+          </button>
+          <a class="" href="/login">Login</a>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/popper.min.js"></script>
+    <script src="/js/bootstrap.js"></script>
+    <script src="/js/rs.js"></script>
+    <!-- iCheck -->
+    <script src="/js/plugins/iCheck/icheck.min.js"></script>
+    <script>
+
+let name = jQuery("#form1 input[name=name]").val();
+let email = jQuery("#form1 input[name=email]").val();
+let contact = jQuery("#form1 input[name=phone]").val();
+let dob = jQuery("#form1 input[name=dob]").val();
+let password = jQuery("#form1 input[name=password]").val();
+ 
+
+function error(err){
+   return err.map(e=>{
+       return `<p>${e}</p>`;
+   }).join('');
+};
+
+$( "#form1" ).submit(function( event ) {
+     event.preventDefault();
+
+     let data = rs.form.get("#form1");
+     console.log(data)
+ 
+ $.ajax({
+       url: "/api/v1/user",
+       method: "POST",
+       data
+     })
+       .done((data)=> {
+         console.log(data)
+           if(data){
+             if(typeof(data) == 'string'){
+                window.location.href = data;
+             }else{
+              $("#error").html(error(data));
+             }
+           } else{ window.location.href = '/login';}
+       })
+       .fail((err)=> {
+        
+       });
+     });
+</script>
+    </script>
+  </body>
+</html>
+
+ 
+

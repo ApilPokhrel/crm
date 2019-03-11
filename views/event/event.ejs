@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<% include ../_layouts/head %>
+<style>
+html {
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+
+.fa {
+  
+  font-size: 30px;
+  width: 30px;
+  text-align: center;
+  text-decoration: none;
+  /* margin: 5px 2px; */
+  border-radius: 50%;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-google {
+  background: #dd4b39;
+  color: white;
+}
+
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+
+.column {
+  float: left;
+  width: auto;
+  margin-bottom: 16px;
+  padding: 0 8px;
+  margin-left: 40px;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+</style>
+<script>
+//  var c = confirm('successfully registred');
+//  if(c === false){
+//    window.history.back();
+//  }
+</script>
+<body>
+  
+    <% include ../_layouts/header %>
+    <div id="wrapper">
+      <% include ../_layouts/sidebar %>
+      <div id="page-wrapper" class="gray-bg">
+        <% include ../_layouts/search %>
+
+        <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="col-sm-4"><h2>This is main title</h2></div>
+          <div class="col-sm-8">
+            <div class="title-action">
+              <a href="" class="btn btn-primary">This is action area</a>
+            </div>
+          </div>
+          <div class="row">
+              <div class="column" id="column">
+                 
+              </div>
+              <div class="column" id="column2">
+                 
+              </div>
+            </div>
+        </div>
+
+        <% include ../_layouts/footer %>
+      </div>
+    </div>
+  <% include ../_layouts/foot %>
+  <script>
+
+
+
+function eventHtml2(events){
+     if(events.length >= 1){
+      return events.map(e => {
+         let day = moment(e.startSession).format('dddd');          // in 12 hours
+         let time = moment(e.startSession).endOf('day').fromNow(); 
+         e.startSession = moment(e.startSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+         e.endSession = moment(e.endSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+
+         return `  <div class="timeline-item">
+                  <div class="row">
+                      <div class="col-4 date">
+                          <i class="fa fa-briefcase"></i>
+                           ${day}
+                          <br>
+                          <small class="text-navy">${time}</small>
+                      </div>
+                      <div class="col content no-top-border">
+                          <p class="m-b-xs"><a href="/event/${e._id}"><strong>${e.title}</a></strong></p>
+                          <p>StartAt: <span data-diameter="40" class="updating-chart">${e.startSession}</span></p>
+
+                          <p>${e.description}</p>
+                    
+                          <p>EndAt: <span data-diameter="40" class="updating-chart">${e.endSession}</span></p>
+                          <p>Register with: <a href="/event/facebook?eventId=${e._id}" class="fa fa-facebook"></a>
+                     <a href="/event/google?eventId=${e._id}" class="fa fa-google"></a>
+                      </p>
+                      </div>
+                  </div>
+              </div>
+                 `;
+       }).join('<hr>');
+     } else{
+       return `No Next events found go <a href="/">home</a>`;
+     }
+  }
+
+
+function eventHtml(e,r,m){
+     if(e){
+          let reg;
+          if(r == true){
+            reg = `<p>Already Registered</p>`;
+          } else{
+            reg = `<p>Register with: <a href="/event/facebook?eventId=${e._id}" class="fa fa-facebook"></a>
+                     <a href="/event/google?eventId=${e._id}" class="fa fa-google"></a>
+                      </p>`;
+          }
+
+          let day = moment(e.startSession).format('dddd');          // in 12 hours
+          let time = moment(e.startSession).endOf('day').fromNow(); 
+          e.startSession = moment(e.startSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+          e.endSession = moment(e.endSession).format('MMMM Do YYYY, h:mm a'); // March 8th 2019, 11:26:56 am
+          
+         return `<p>${m}</p>
+         <div class="card">
+                  <div class="container">
+                    <h2>${e.title}</h2>
+                    <p class="title">SartAt: ${e.startSession}</p>
+                    <p>${e.description}</p>
+                    <p>EndAt: ${e.endSession}</p>
+                     ${reg}
+                  </div>
+                </div>
+                 `;
+      
+     } else{
+       return `No event found go <a href="/">home</a>`;
+     }
+  }
+  
+              $.ajax({
+                  url:`${window.location.protocol}//${window.location.host}/api/v1/${window.location.pathname}`,
+                  headers:{access_token: $.cookie('access_token')},
+                  method:'get',
+              })
+              .done(d => {
+                if(!d) alert('Uable to register user');
+                if(d.event){
+                  $("#column").html(eventHtml(d.event, d.registered, d.msg));
+                };
+                if(d.msg){
+                  $("#column2").html(eventHtml2(d.events));
+                }
+                
+              })
+              .fail(e=>{
+                  console.log(e.responseJSON);
+              });
+  </script>
+</body>
+</html>

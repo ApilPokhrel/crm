@@ -1,0 +1,116 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<% include ../_layouts/head %>
+
+<body>
+  
+    <% include ../_layouts/header %>
+    <div id="wrapper">
+      <% include ../_layouts/sidebar %>
+      <div id="page-wrapper" class="gray-bg">
+        <% include ../_layouts/search %>
+
+        <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="col-sm-4"><h2>This is main title</h2></div>
+          <div class="col-sm-8">
+            <div class="title-action">
+              <a href="" class="btn btn-primary">This is action area</a>
+            </div>
+          </div>
+          <div class="row">
+              </div>
+           
+        
+          <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>StartDate</th>
+                    <th>EndDate</th>
+                    <th>No.Seats</th>
+                    <th>TotalUser</th>
+                    <th>Action1</th>
+                    <th>Action2</th>
+                </tr>
+            </thead>
+            <tbody id="eventTable">
+            </tbody>
+            </table>
+        
+    </div>
+        <% include ../_layouts/footer %>
+      </div>
+    </div>
+  <% include ../_layouts/foot %>
+  <script>
+
+
+function eventTable(events){
+  if(events){
+    return events.map(e=>{
+      return `<tr>
+                    <td>${e.title}</td>
+                    <td>${e.startSession}</td>
+                    <td>${e.endSession}</td>
+                    <td>${e.seats}</td>
+                    <td>${e.users.length}</td>
+                    <td><button class="btn btn-warning" id="deleteEvent" onclick="if(confirm('are sure to delete')){ deleteEvent('${e._id}')}"><i class="fa fa-trash"></i></button></td>
+                    <td><a href="/event/edit/${e._id}" class="btn btn-info"><i class="fa fa-edit"></i></a></td>
+                </tr>`
+    }).join('');
+  }
+}
+
+
+          function getEvents(){
+              $.ajax({
+                  url:`http://localhost:3011/api/v1/event`,
+                  headers:{access_token: $.cookie('access_token')},
+                  method:'get',
+              })
+              .done(d => {
+                if(!d) alert('No events registered');
+                if(d){
+                  $("#eventTable").html('');
+                  $("#eventTable").html(eventTable(d));
+                };
+                
+              })
+              .fail(e=>{
+                  console.log(e.responseJSON);
+              });
+
+            };
+            
+            
+            getEvents();
+
+              function deleteEvent(id){
+              $.ajax({
+                  url:`http://localhost:3011/api/v1/event/${id}`,
+                  headers:{access_token: $.cookie('access_token')},
+                  method:'delete',
+              })
+              .done(d => {
+                if(!d) getEvents();
+                if(d){
+                  console.log(d);
+                };
+                
+              })
+              .fail(e=>{
+                  console.log(e.responseJSON);
+              });
+            }
+
+  $(document).ready(function() {
+    $('#example').DataTable();
+   });
+
+
+  </script>
+</body>
+</html>

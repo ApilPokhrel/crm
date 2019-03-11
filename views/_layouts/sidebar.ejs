@@ -1,0 +1,43 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul class="nav metismenu" id="side-menu">
+      <li class="nav-header">
+        <div class="dropdown profile-element">
+          <center>
+            <img alt="image" class="rounded-circle" src="/img/logos/rumsan.png" width="50%" />
+            <span class="block m-t-xs font-bold text-white">Rumsan Associates</span>
+          </center>
+        </div>
+        <div class="logo-element">
+          <img alt="RS" src="/img/logo-rumsan.png" height="85%" width="70%" />
+        </div>
+      </li>
+      <li class="<%  if (typeof name!='undefined' && name == 'dashboard') { %> active <% } %>">
+        <a href="/"><i class="fa fa-user"></i> <span class="nav-label">Dashboard</span></a>
+      </li>
+      <li
+        id="mnuMgmt"
+        style="display:none"
+        class="<%  if (typeof name!='undefined' && name == 'manage') { %> active <% } %>"
+      >
+        <a href="#"
+          ><i class="fa fa-briefcase"></i> <span class="nav-label">Manage</span
+          ><span class="fa arrow"></span
+        ></a>
+        <ul class="nav nav-second-level collapse">
+          <li><a href="/users">Users</a></li>
+          <li><a href="/settings">Settings</a></li>
+        </ul>
+      </li>
+      <li class="<%  if (typeof name!='undefined' && name == 'dashboard') { %> active <% } %>">
+        <a href="/event"><i class="fa fa-calendar"></i> <span class="nav-label">Events</span></a>
+      </li>
+      <li class="<%  if (typeof name!='undefined' && name == 'dashboard') { %> active <% } %>">
+        <a href="/event/admin"><i class="fa fa-calendar"></i> <span class="nav-label">Event List</span></a>
+      </li>
+      <li class="<%  if (typeof name!='undefined' && name == 'dashboard') { %> active <% } %>">
+        <a href="/event/create"><i class="fa fa-calendar"></i> <span class="nav-label">CreateEvent</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>

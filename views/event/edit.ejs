@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../_layouts/head %>
+   
+    <link href="/css/plugins/dataTables/datatables.min.css" rel="stylesheet" />
+    <style>
+      .alignstatus {
+        align-self: center;
+      }
+    </style>
+  </head>
+
+  <body class="md-skin">
+    <% include ../_layouts/header %>
+    <div id="wrapper">
+      <% include ../_layouts/sidebar %>
+      <div id="page-wrapper" class="gray-bg">
+        <% include ../_layouts/search %>
+
+        <div class="row wrapper border-bottom white-bg page-heading">
+          
+          <div class="col-md-5">
+              <div id="error"></div>
+              <br><br>
+            <form  method="POST" onsubmit="editEvent('<%= event._id %>');"  id="eventform" role="form" >
+              <div class="form-group">
+                  <label for="event-title">*Title</label>
+                  <input type="text" name="title" class="form-control" id="event-title" placeholder="provide title for event" value="<%= event.title %>">
+              </div>
+              <div class="form-group">
+                  <label for="event-title">*Event Type</label>
+                  <input class="form-control" name="eventType" id="event-type" placeholder="provide type for event" value="<%= event.eventType %>">
+              </div>
+              <div class="form-group">
+                  <label for="event-description">*Description</label>
+                  <textarea class="form-control" name= "description" id="event-description" placeholder="provide description for event"><%= event.description %>
+                  </textarea>
+              </div>
+              
+              <div class="form-group">
+                <label for="event-start">*Start Session</label>
+                <input class="form-control" name="startSession" id="event-start" type="datetime-local" value="<%= event.startSession %>">
+            </div>
+
+                  <div class="form-group">
+                      <label for="event-start">*End Session</label>
+                      <input class="form-control" name="endSession" id="event-end" type="datetime-local" value="<%= event.endSession %>">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address">*Address</label>
+                    <input class="form-control" name="address" id="address" type="text" value="<%= event.location.address %>">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="seats">*Seats Available</label>
+                    <input class="form-control" name="seats"  type="number" value="<%= event.seats %>">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address">*lat</label>
+                    <input class="form-control" name="lat" id="address" type="text" value="<%= event.location.coordinates[1] %>">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="address">*lng</label>
+                    <input class="form-control" name="lng" id="address" type="text" value="<%= event.location.coordinates[0] %>">
+                  </div>
+
+              <input type="submit" class="btn btn-primary" value="submit"/>
+            </form>
+          </div>
+          <div class="col-md-5 col-md-offset-1">
+                 <form action="" role="form" id="schedule">
+                  
+                 </form>
+          </div>
+         
+        </div>
+
+    
+      </div>
+    </div>
+    <% include ../_layouts/foot %>
+    <script src="https://rawgit.com/moment/moment/2.2.1/min/moment.min.js"></script>
+    <script type="text/javascript">
+      
+  </script>  
+    <script>
+
+    $(document).on('submit', '#eventform', function(event){
+    event.preventDefault();
+      });
+
+        function editEvent(id){
+             let myForm = document.getElementById("eventform");
+        
+            
+                   let title = myForm.elements[0].value;
+                   let eventType = myForm.elements[1].value;
+                   let description = myForm.elements[2].value;
+                   let startSession =  myForm.elements[3].value;
+                   let endSession = myForm.elements[4].value;
+                   let address = myForm.elements[5].value;
+                   let seats = myForm.elements[6].value;
+                   let lat = myForm.elements[7].value;
+                   let lng = myForm.elements[8].value;
+         
+               $.ajax({
+                  url:`http://localhost:3011/api/v1/event/${id}`,
+                  headers:{access_token: $.cookie('access_token')},
+                  method:'patch',
+                  data: {title, eventType, description, startSession, endSession,seats, address, lat, lng},
+              })
+              .done(d => {
+                if(!d) alert('Event added Succesfully');
+                console.log(d);
+                if(typeof(d) !== 'string'){
+                  $("#error").html(error(d));
+                };
+                
+              })
+              .fail(e=>{
+                  console.log(e.responseJSON);
+              }); 
+            }
+        
+            function error(err){
+             return err.map(e=>{
+              return `<p>${e}</p>`;
+            }).join('');
+   };
+
+        
+             
+          </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdnX63bBpKo5Eel56HAb-kN56-WcZwazY&libraries=places&callback=initMap"
+    async defer></script>
+  </body>
+  
+</html>
